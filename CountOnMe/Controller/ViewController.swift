@@ -9,6 +9,19 @@
 import UIKit
 
 class ViewController: UIViewController {
+    // View Life cycles
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+    }
+
+    var calculation = Calculation()
+
+
+
+
+
+
     @IBOutlet weak var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
 
@@ -33,23 +46,20 @@ class ViewController: UIViewController {
         return textView.text.firstIndex(of: "=") != nil
     }
 
-    // View Life cycles
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-
     // View actions
     @IBAction func tappedNumberButton(_ sender: UIButton) {
-        guard let numberText = sender.title(for: .normal) else {
-            return
-        }
+        calculation.addNumber(number: sender.title(for: .normal)!)
+        textView.text = calculation.operation
 
-        if expressionHaveResult {
-            textView.text = ""
-        }
-
-        textView.text.append(numberText)
+//        guard let numberText = sender.title(for: .normal) else {
+//            return
+//        }
+//
+//        if expressionHaveResult {
+//            textView.text = ""
+//        }
+//
+//        textView.text.append(numberText)
     }
 
     @IBAction func tappedAdditionButton(_ sender: UIButton) {
@@ -70,6 +80,14 @@ class ViewController: UIViewController {
             alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             self.present(alertVC, animated: true, completion: nil)
         }
+    }
+
+    @IBAction func tappedMultiplicationButton(_ sender: UIButton) {
+
+    }
+
+    @IBAction func tappedDivisionButton(_ sender: UIButton) {
+
     }
 
     @IBAction func tappedEqualButton(_ sender: UIButton) {
