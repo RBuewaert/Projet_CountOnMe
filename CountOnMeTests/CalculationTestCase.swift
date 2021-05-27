@@ -17,13 +17,7 @@ class CalculationTestCase: XCTestCase {
         calculation = Calculation()
     }
 
-    func errorMessage() {
-        print("Un operateur est déja mis !")
-    }
-
-    func expressionIsNotCorrect() {
-        print("Entrez une expression correcte !")
-    }
+    var errorMessage = ""
 
     func testGivenOperationIsEmpty_WhenUserTape1Number_ThenNumberAddOnOperation() {
         calculation.operation = ""
@@ -33,7 +27,7 @@ class CalculationTestCase: XCTestCase {
         XCTAssertEqual(calculation.operation, "3")
     }
 
-    func testGivenOperationIsNotEmpty_WhenUserTape1Number_ThenNumberAddOnOperation() {
+    func testGivenOperationContainNumber_WhenUserTapeOneNumber_ThenNumberAddOnOperation() {
         calculation.operation = "32"
 
         calculation.addNumber(number: "5")
@@ -41,7 +35,7 @@ class CalculationTestCase: XCTestCase {
         XCTAssertEqual(calculation.operation, "325")
     }
 
-    func testGivenOperationHaveResult_WhenUserTape1Number_ThenOperationIsResetedAndNumberAddOnOperation() {
+    func testGivenOperationHaveResult_WhenUserTapeOneNumber_ThenOperationIsResetedAndNumberAddOnOperation() {
         calculation.operation = "2 + 4 = 6"
 
         calculation.addNumber(number: "5")
@@ -49,35 +43,171 @@ class CalculationTestCase: XCTestCase {
         XCTAssertEqual(calculation.operation, "5")
     }
 
-    func testGivenOperationIsEmpty_WhenUserTape1OperatorForAddition_ThenOperatorNotAddedToOperation() {
-        calculation.operation = ""
+    func testGivenResult_WhenUserTapeAnOperator_ThenOperatorIsAddedToResult() {
+        calculation.operation = "3 + 2 = 5"
 
-        calculation.addOperator(operatorType: .addition, errorMessage: errorMessage)
+        do {
+            try calculation.addOperator(operatorType: .addition)
+        } catch {
+            errorMessage = "An operator is already present !"
+        }
 
-        XCTAssertEqual(calculation.operation, "")
+        XCTAssertEqual(calculation.operation, "5 + ")
     }
 
-    func testGivenOperationIsNotEmpty_WhenUserTape1OperatorForSubstraction_ThenOperatorAddedToOperation() {
+    func testGivenOperationIsEmpty_WhenUserTapeOneOperator_ThenOperatorNotAddedToOperation() {
+        calculation.operation = ""
+
+        do {
+            try calculation.addOperator(operatorType: .addition)
+        } catch {
+            errorMessage = "An operator is already present !"
+        }
+
+        XCTAssertEqual(calculation.operation, "")
+        XCTAssertEqual(errorMessage, "An operator is already present !")
+    }
+
+    func testGivenOperationIsNotEmpty_WhenUserTapeOneOperator_ThenOperatorAddedToOperation() {
         calculation.operation = "41"
 
-        calculation.addOperator(operatorType: .substraction, errorMessage: errorMessage)
+        do {
+            try calculation.addOperator(operatorType: .substraction)
+        } catch {
+            errorMessage = "An operator is already present !"
+        }
 
         XCTAssertEqual(calculation.operation, "41 - ")
     }
 
-    func testGivenOperationIsSimple_WhenUserTapeEqual_ThenOperatorDisplayResult() {
+    func testGivenOperationSimpleAddition_WhenUserTapeEqual_ThenOperatorDisplayResult() {
         calculation.operation = "3 + 2"
 
-        calculation.calcul(expressionIsNotCorrect: expressionIsNotCorrect)
+        do {
+            try calculation.calcul()
+        } catch CalculationError.divisionByZero {
+            errorMessage = "It is not possible to divide by zero !"
+        } catch {
+            errorMessage = "Enter a correct expression !"
+        }
 
         XCTAssertEqual(calculation.operation, "3 + 2 = 5")
+    }
+
+    func testGivenOperationSimpleMultiplication_WhenUserTapeEqual_ThenOperatorDisplayResult() {
+        calculation.operation = "3 x 2.5"
+
+        do {
+            try calculation.calcul()
+        } catch CalculationError.divisionByZero {
+            errorMessage = "It is not possible to divide by zero !"
+        } catch {
+            errorMessage = "Enter a correct expression !"
+        }
+
+        XCTAssertEqual(calculation.operation, "3 x 2.5 = 7.5")
+    }
+
+    func testGivenOperationContainDivisionAndMultiplication_WhenUserTapeEqual_ThenOperatorDisplayResult() {
+        calculation.operation = "12 / 3 x 2"
+
+        do {
+            try calculation.calcul()
+        } catch CalculationError.divisionByZero {
+            errorMessage = "It is not possible to divide by zero !"
+        } catch {
+            errorMessage = "Enter a correct expression !"
+        }
+
+        XCTAssertEqual(calculation.operation, "12 / 3 x 2 = 8")
     }
 
     func testGivenOperationIsComplexe_WhenUserTapeEqual_ThenOperatorDisplayResult() {
         calculation.operation = "3 + 2 x 2 - 10 / 2"
 
-        calculation.calcul(expressionIsNotCorrect: expressionIsNotCorrect)
+        do {
+            try calculation.calcul()
+        } catch CalculationError.divisionByZero {
+            errorMessage = "It is not possible to divide by zero !"
+        } catch {
+            errorMessage = "Enter a correct expression !"
+        }
 
         XCTAssertEqual(calculation.operation, "3 + 2 x 2 - 10 / 2 = 2")
+    }
+
+    func testGivenOperationIsIncorrect_WhenUserTapeEqual_ThenOperatorNotDisplayResultAndAnErrorMessageIsDisplay() {
+        calculation.operation = "2 x"
+
+        do {
+            try calculation.calcul()
+        } catch CalculationError.divisionByZero {
+            errorMessage = "It is not possible to divide by zero !"
+        } catch {
+            errorMessage = "Enter a correct expression !"
+        }
+
+        XCTAssertEqual(calculation.operation, "2 x")
+        XCTAssertEqual(errorMessage, "Enter a correct expression !")
+    }
+
+    func testGivenOperationIsNotEmpty_WhenUserTapeCButton_ThenCurrentOperationIsRemoved() {
+        calculation.operation = "3 + 5"
+
+        calculation.clearOperation()
+
+        XCTAssertEqual(calculation.operation, "")
+    }
+
+    func testGivenOperationIsDivisedByZero_WhenUserTapeEqualButton_ThenTheResultIsNotDisplay() {
+        calculation.operation = "3 / 0"
+
+        do {
+            try calculation.calcul()
+        } catch CalculationError.divisionByZero {
+            errorMessage = "It is not possible to divide by zero !"
+        } catch {
+            errorMessage = "Enter a correct expression !"
+        }
+
+        XCTAssertEqual(calculation.operation, "3 / 0")
+        XCTAssertEqual(errorMessage, "It is not possible to divide by zero !")
+    }
+
+    func testGivenOperationNoContainPoint_WhenUserTapeOnePoint_ThenPointAddedToOperation() {
+        calculation.operation = "4"
+
+        do {
+            try calculation.addPoint()
+        } catch {
+            errorMessage = "Enter a correct expression !"
+        }
+
+        XCTAssertEqual(calculation.operation, "4.")
+    }
+
+    func testGivenOperationContainPoint_WhenUserTapeOnePoint_ThenPointNotAddedToOperation() {
+        calculation.operation = "4.2"
+
+        do {
+            try calculation.addPoint()
+        } catch {
+            errorMessage = "Enter a correct expression !"
+        }
+
+        XCTAssertEqual(calculation.operation, "4.2")
+        XCTAssertEqual(errorMessage, "Enter a correct expression !")
+    }
+
+    func testGivenOperationHaveResult_WhenUserTapeOnePoint_ThenOperationResetedAndPointAdded() {
+        calculation.operation = "3 + 2 = 5"
+
+        do {
+            try calculation.addPoint()
+        } catch {
+            errorMessage = "Enter a correct expression !"
+        }
+
+        XCTAssertEqual(calculation.operation, ".")
     }
 }
