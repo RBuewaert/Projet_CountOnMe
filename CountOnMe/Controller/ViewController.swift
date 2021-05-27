@@ -63,17 +63,17 @@ class ViewController: UIViewController {
         }
     }
 
-    func updateTextView() {
+    private func updateTextView() {
         textView.text = calculation.operation
         autoScrolling()
     }
 
-    func autoScrolling() {
+    private func autoScrolling() {
         let range = NSRange(location: textView.text.count - 1, length: 0)
         textView.scrollRangeToVisible(range)
     }
 
-    func errorMessage(message: String) {
+    private func errorMessage(message: String) {
         let alertVC = UIAlertController(title: "Error!", message: message,
                                         preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
