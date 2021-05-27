@@ -65,10 +65,6 @@ class ViewController: UIViewController {
 
     private func updateTextView() {
         textView.text = calculation.operation
-        autoScrolling()
-    }
-
-    private func autoScrolling() {
         let range = NSRange(location: textView.text.count - 1, length: 0)
         textView.scrollRangeToVisible(range)
     }
