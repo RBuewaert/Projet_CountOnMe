@@ -136,7 +136,7 @@ class CalculationTestCase: XCTestCase {
         XCTAssertEqual(calculation.operation, "3 + 2 x 2 - 10 / 2 = 2")
     }
 
-    func testGivenOperationIsIncorrect_WhenUserTapeEqual_ThenOperatorNotDisplayResultAndAnErrorMessageIsDisplay() {
+    func testGivenOperationIsIncorrect_WhenUserTapeEqual_ThenOperatorNotDisplayResultAndAnErrorMessageIsDisplayed() {
         calculation.operation = "2 x"
 
         do {
@@ -159,7 +159,7 @@ class CalculationTestCase: XCTestCase {
         XCTAssertEqual(calculation.operation, "")
     }
 
-    func testGivenOperationIsDivisedByZero_WhenUserTapeEqualButton_ThenTheResultIsNotDisplay() {
+    func testGivenOperationIsDivisedByZero_WhenUserTapeEqual_ThenTheResultIsNotDisplayAndAnErrorMessageIsDisplayed() {
         calculation.operation = "3 / 0"
 
         do {

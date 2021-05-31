@@ -70,20 +70,23 @@ final class Calculation {
         operation.append(".")
     }
 
-    private func addOperatorToResult() {
-        var indexEqual: Int? {
-            return elements.firstIndex(of: "=")
+    private func startFromResultIfNeeded() {
+        if let last = elements.last, elements.firstIndex(of: "=") != nil {
+            operation = last
         }
-        if indexEqual != nil {
-            operation = elements.last ?? ""
-        }
+//        var indexEqual: Int? {
+//            return elements.firstIndex(of: "=")
+//        }
+//        if indexEqual != nil {
+//            operation = elements.last ?? ""
+//        }
     }
 
     func addOperator(operatorType: OperatorType) throws {
         guard expressionIsCorrect else {
             throw CalculationError.operatorAlreadyPresent
         }
-        addOperatorToResult()
+        startFromResultIfNeeded()
         operation.append(operatorType.symbol)
     }
 
@@ -126,7 +129,7 @@ final class Calculation {
 
         var indexDivisionOrMultiplication: Int? {
             if let indexMultiplication = indexMultiplication, let indexDivision = indexDivision {
-                return indexMultiplication > indexDivision ? indexDivision : indexMultiplication
+                return indexMultiplication > indexDivision ? indexDivision  : indexMultiplication
             } else {
                 return indexMultiplication ?? indexDivision
             }
