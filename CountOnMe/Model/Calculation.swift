@@ -74,12 +74,6 @@ final class Calculation {
         if let last = elements.last, elements.firstIndex(of: "=") != nil {
             operation = last
         }
-//        var indexEqual: Int? {
-//            return elements.firstIndex(of: "=")
-//        }
-//        if indexEqual != nil {
-//            operation = elements.last ?? ""
-//        }
     }
 
     func addOperator(operatorType: OperatorType) throws {
